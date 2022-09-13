@@ -3,6 +3,15 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
+import PhoneScreen from './Phonescreen.js'
+import * as ThreeMeshUI from 'three-mesh-ui'
+import Resources from './Utils/Resources'
+import sources from './sources'
+
+/**
+ * Resources
+ */
+const resources = new Resources(sources)
 
 /**
  * Loaders
@@ -41,9 +50,12 @@ const textureLoader = new THREE.TextureLoader(loadingManager)
  */
 // Debug
 const debugObject = {}
+let selectState = false
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
+
+
 
 // Scene
 const scene = new THREE.Scene()
@@ -70,7 +82,7 @@ const overlayMaterial = new THREE.ShaderMaterial({
 
         void main()
         {
-            gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
+            gl_FragColor = vec4(0.055,0.537,0.451, uAlpha);
         }
     `
 })
@@ -83,14 +95,15 @@ crossTexture.wrapT = THREE.RepeatWrapping;
 crossTexture.repeat.set( 1, 1 );
 
 // Burger menu
-const sphereGeometry = new THREE.SphereBufferGeometry(1, 32, 32)
-const baubleMaterial = new THREE.MeshStandardMaterial({ color: "green", roughness: 0, map: crossTexture, envMapIntensity: 0.1, emissive: "#370037" })
+const sphereGeometry = new THREE.SphereBufferGeometry(1, 25, 25)
+const baubleMaterial = new THREE.MeshStandardMaterial({ color: "#0E8973", roughness: 0, map: crossTexture, envMapIntensity: 0.1, emissive: "#370037" })
 const burgerBubble = new THREE.Mesh(
     sphereGeometry,
     baubleMaterial,
 )
-burgerBubble.position.set(4, 2, 4)
+burgerBubble.position.set(7, 2, 4)
 scene.add(burgerBubble)
+
 
 /**
  * Update all materials
@@ -122,6 +135,32 @@ const environmentMap = cubeTextureLoader.load([
     '/textures/environmentMaps/0/nz.jpg'
 ])
 
+const environmentMap1 = cubeTextureLoader.load([
+    '/textures/environmentMaps/1/px.jpg',
+    '/textures/environmentMaps/1/nx.jpg',
+    '/textures/environmentMaps/1/py.jpg',
+    '/textures/environmentMaps/1/ny.jpg',
+    '/textures/environmentMaps/1/pz.jpg',
+    '/textures/environmentMaps/1/nz.jpg'
+])
+let envMapCount = 0
+
+
+
+window.addEventListener( 'pointerdown', () => {
+    // selectState = true;
+} );
+// burgerBubble.scale.set(4,4,4)
+window.addEventListener( 'pointerup', () => {
+    envMapCount++
+    if (envMapCount==3) envMapCount = 0
+    resources.items['environmentMap'+envMapCount].encoding = THREE.sRGBEncoding
+    gsap.to(burgerBubble.position.x, { duration: 3, value: 4, delay: 1 })
+    scene.background = resources.items['environmentMap'+envMapCount]
+    scene.environment = environmentMap
+
+} );
+
 environmentMap.encoding = THREE.sRGBEncoding
 
 scene.background = environmentMap
@@ -144,6 +183,9 @@ gltfLoader.load(
         updateAllMaterials()
     }
 )
+let cellphone = new PhoneScreen()
+scene.add(cellphone)
+
 
 
 
@@ -216,6 +258,8 @@ const tick = () =>
 {
     // Update controls
     controls.update()
+    cellphone.update()
+    ThreeMeshUI.update();
 
     // Render
     renderer.render(scene, camera)
