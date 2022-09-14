@@ -51,4 +51,17 @@ export default [
         '/textures/environmentMaps/3/nz.jpg'
         ]
     },
+    {
+        name: 'environmentMap4',
+        type: 'cubeTexture',
+        path: 
+        [
+        '/textures/environmentMaps/4/px.png',
+        '/textures/environmentMaps/4/nx.png',
+        '/textures/environmentMaps/4/py.png',
+        '/textures/environmentMaps/4/ny.png',
+        '/textures/environmentMaps/4/pz.png',
+        '/textures/environmentMaps/4/nz.png'
+        ]
+    },
 ]
