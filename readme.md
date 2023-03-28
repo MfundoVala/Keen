@@ -1,4 +1,4 @@
-# A Three.js Websit
+# A Three.js Website
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
