@@ -1,4 +1,4 @@
-# Three.js Journey
+# A Three.js Websit
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
